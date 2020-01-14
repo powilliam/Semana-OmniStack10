@@ -34,5 +34,4 @@ app.use(routes)
  * Body -> for create or change a register, generally used by POST and PUT
  */
 
-
 app.listen(3333)
