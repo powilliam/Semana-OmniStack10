@@ -3,6 +3,7 @@ const DevController = require('./controllers/DevController')
 
 const routes = Router()
 
-routes.post('/devs', DevController.store)
+routes.get('/devs', DevController.index)
+routes.post('/devs/register', DevController.store)
 
 module.exports = routes

@@ -2,6 +2,12 @@ const axios = require('axios')
 const Devs = require('../models/Dev')
 
 class DevController {
+    async index(request, response) {
+        const allDevs = await Devs.find()
+
+        return response.json(allDevs)
+    }
+
     async store(request, response) {
         const { github, techs, latitude, longitude } = request.body
     
