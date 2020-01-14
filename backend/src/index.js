@@ -1,5 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const routes = require('./routes')
+
 const bodyParser = express.json()
 
 const app = express()
@@ -21,6 +23,7 @@ mongoose.connect(
 )
 
 app.use(bodyParser)
+app.use(routes)
 
 // HTTP methods -> ['GET', 'POST', 'PUT', 'DELETE']
 
@@ -31,11 +34,5 @@ app.use(bodyParser)
  * Body -> for create or change a register, generally used by POST and PUT
  */
 
-app.post('/', (request, response) => {
-    console.log(request.body)
-    return response.json({
-        message: 'Hello OmniStack'
-    })
-})
 
 app.listen(3333)
