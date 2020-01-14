@@ -9,6 +9,7 @@ routes.get('/search', SearchController.index)
 
 routes.get('/devs', DevController.index)
 routes.post('/devs/register', DevController.store)
+routes.put('/devs/:_id/update', DevController.update)
 routes.delete('/devs/:_id/unregister', DevController.destroy)
 
 module.exports = routes
