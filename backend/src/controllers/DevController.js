@@ -1,5 +1,9 @@
 const axios = require('axios')
 const Devs = require('../models/Dev')
+const parseStringToArray = require('../utils/parseStringToArray')
+
+// Challenge: Finish the CRUD with Update and Destroy methods
+// To update: Bio, Techs, Name, Avatar, Location
 
 class DevController {
     async index(request, response) {
@@ -17,6 +21,8 @@ class DevController {
             console.log('> Dev isn`t registered')
 
             const { name = login, avatar_url, bio } = await getGithubUserData(github)
+
+            const arrayTechs = parseStringToArray(techs)
     
             const location = {
                 type: 'Point',
@@ -26,7 +32,7 @@ class DevController {
             const dev = await Devs.create({
                 name,
                 avatar: avatar_url,
-                techs: techs.split(',').map(techs => techs.trim()),
+                techs: arrayTechs,
                 github,
                 bio,
                 location
@@ -50,6 +56,16 @@ class DevController {
     
             return response.data
         }
+    }
+
+    async destroy(request, response) {
+        const { _id } = request.params
+
+        console.log(`> Deleting dev with id: ${_id}`)
+        
+        await Devs.findByIdAndDelete({ _id: _id })
+
+        return response.status(200).json({ status: 'deleted' })
     }
 }
 
