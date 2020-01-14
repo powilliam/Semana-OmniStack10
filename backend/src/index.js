@@ -9,9 +9,11 @@ const app = express()
 mongoose.connect(
     'mongodb+srv://powilliam:powilliam@heaven-uc9c7.mongodb.net/test?retryWrites=true&w=majority', {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
+        useFindAndModify: true,
+        useCreateIndex: true,
     },
-    err => {
+    function GetConnectionStatus(err){
         if (err) {
             console.error(err)
 
@@ -25,13 +27,6 @@ mongoose.connect(
 app.use(bodyParser)
 app.use(routes)
 
-// HTTP methods -> ['GET', 'POST', 'PUT', 'DELETE']
-
-/** Params types:
- * 
- * Query -> for search generally used by GET
- * Route -> for perform an action in a specific register, generally used by PUT and DELETE.
- * Body -> for create or change a register, generally used by POST and PUT
- */
-
-app.listen(3333)
+app.listen(3333, () => {
+    console.log('> Listening')
+})
