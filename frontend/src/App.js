@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
+import api from './services/api'
 
 import './global.css'
 import './App.css'
@@ -12,6 +13,8 @@ export default function App() {
   const [ latitude, setLatitude ] = useState(0)
   const [ longitude, setLongitude ] = useState(0)
 
+  const [ devs, setDevs ] = useState([])
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       function HandleCoordinateState({ coords }) {
@@ -20,20 +23,58 @@ export default function App() {
         setLatitude(latitude)
         setLongitude(longitude)
       },
-      function DisplayError(error) {
-        console.error(error)
+      function(error) {
+        DisplayError(error)
       },
       {
-        timeout: 300000
+        timeout: 30000
       }
     )
   }, [])
+
+  useEffect(() => {
+    async function RequestForDevs() {
+      return await api.get('/devs')
+    }
+
+    RequestForDevs()
+    .then(
+      function HandleDevsState({ data }) {
+        setDevs(data)
+      }
+    )
+    .catch(error => DisplayError(error))
+  }, [])
+
+  async function HandleRegisterDeveloper(e) {
+    e.preventDefault()
+
+    const { data } = await api.post('/devs/register', {
+      github,
+      techs,
+      latitude,
+      longitude
+    })
+
+    clearGithubAndtechsInput()
+    
+    setDevs(devs => [...devs, data])
+  }
+
+  function DisplayError(error) {
+    console.error(error)
+  }
+
+  function clearGithubAndtechsInput() {
+    setGithub('')
+    setTechs('')
+  }
 
   return (
     <div id="app">
       <aside>
         <strong>Cadastrar</strong>
-        <form>
+        <form onSubmit={HandleRegisterDeveloper}>
           <div className="input-block">
             <label htmlFor="github">Usuário do Github</label>
             <input 
@@ -88,41 +129,19 @@ export default function App() {
 
       <main>
         <ul>
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/55867831?s=460&v=4" alt="William Porto" />
-              <div className="user-info">
-                <strong>William Porto</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Chemistry student at UFAM. Ìn love with Node.js, ReactJS and React Native</p>
-            <a href="https://github.com/powilliam">Acessar perfil do Github</a>
+          { devs.map(dev => (
+            <li key={dev._id} className="dev-item">
+              <header>
+                <img src={ dev.avatar } alt={ dev.name }/>
+                <div className="user-info">
+                  <strong>{ dev.name }</strong>
+                  <span>{ dev.techs.join(', ')}</span>
+                </div>
+              </header>
+              <p>{ dev.bio }</p>
+              <a href={`https://github.com/${dev.github}`}>Acessar perfil do Github</a>
           </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/55867831?s=460&v=4" alt="William Porto" />
-              <div className="user-info">
-                <strong>William Porto</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Chemistry student at UFAM. Ìn love with Node.js, ReactJS and React Native</p>
-            <a href="https://github.com/powilliam">Acessar perfil do Github</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/55867831?s=460&v=4" alt="William Porto" />
-              <div className="user-info">
-                <strong>William Porto</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Chemistry student at UFAM. Ìn love with Node.js, ReactJS and React Native</p>
-            <a href="https://github.com/powilliam">Acessar perfil do Github</a>
-          </li>
+          )) }
         </ul>
       </main>
     </div>
