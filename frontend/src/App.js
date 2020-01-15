@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './global.css'
 import './App.css'
@@ -7,6 +7,28 @@ import './Main.css'
 
 
 export default function App() {
+  const [ github, setGithub ] = useState('')
+  const [ techs, setTechs ] = useState('')
+  const [ latitude, setLatitude ] = useState(0)
+  const [ longitude, setLongitude ] = useState(0)
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      function HandleCoordinateState({ coords }) {
+        const { latitude, longitude } = coords
+
+        setLatitude(latitude)
+        setLongitude(longitude)
+      },
+      function DisplayError(error) {
+        console.error(error)
+      },
+      {
+        timeout: 300000
+      }
+    )
+  }, [])
+
   return (
     <div id="app">
       <aside>
@@ -14,23 +36,49 @@ export default function App() {
         <form>
           <div className="input-block">
             <label htmlFor="github">Usuário do Github</label>
-            <input name="github" id="github" required/>
+            <input 
+              name="github" 
+              id="github" 
+              value={github}
+              onChange={e => setGithub(e.target.value)}
+              required
+            />
           </div>
 
           <div className="input-block">
             <label htmlFor="techs">Tecnologias</label>
-            <input name="techs" id="techs" required/>
+            <input 
+              name="techs" 
+              id="techs"
+              value={techs}
+              onChange={e => setTechs(e.target.value)}
+              required
+            />
           </div>
 
           <div className="input-group">
             <div className="input-block">
               <label htmlFor="latitude">Latitude</label>
-              <input name="latitude" id="latitude" required/>
+              <input 
+                type="number" 
+                name="latitude" 
+                id="latitude" 
+                value={latitude} 
+                onChange={e => setLatitude(e.target.value)}
+                required
+              />
             </div>
 
             <div className="input-block">
               <label htmlFor="longitude">Longitude</label>
-              <input name="longitude" id="longitude" required/>
+              <input 
+                type="number" 
+                name="longitude" 
+                id="longitude" 
+                value={longitude} 
+                onChange={e => setLongitude(e.target.value)}
+                required
+              />
             </div>
           </div>
 
