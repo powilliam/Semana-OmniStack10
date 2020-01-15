@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors')
 const routes = require('./routes')
 
 const bodyParser = express.json()
@@ -24,6 +25,7 @@ mongoose.connect(
     }
 )
 
+app.use(cors())
 app.use(bodyParser)
 app.use(routes)
 
