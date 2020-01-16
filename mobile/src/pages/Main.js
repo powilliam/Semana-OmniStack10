@@ -32,14 +32,22 @@ export default function Main({ navigation }) {
         loadStartLocation()
     }, [])
 
-    function HandleChangeCurrentPosition(region) {
-        setCurrentRegion(region)
+    async function searchForDevs() {
+        const { latitude, longitude } = currentRegion
+
+        const { data } = await api.get('/search', {
+            params: {
+                latitude,
+                longitude,
+                techs
+            }
+        })
+
+        setDevs(data.locatedDevs)
     }
 
-    function navigateToGithubProfile() {
-        navigation.navigate('Profile', {
-            github: 'powilliam'
-        })
+    function HandleChangeCurrentPosition(region) {
+        setCurrentRegion(region)
     }
 
     return (
@@ -53,18 +61,30 @@ export default function Main({ navigation }) {
                         initialRegion={currentRegion}
                         onRegionChangeComplete={HandleChangeCurrentPosition}
                     >
-                        <Marker coordinate={{ latitude: -7.503922, longitude: -63.026543 }}>
-                            <Image 
-                                style={styles.avatar} 
-                                source={{ uri: 'https://avatars0.githubusercontent.com/u/55867831?s=460&v=4' }}
-                            />
+                        { devs.map(dev => (
+                            <Marker
+                                key={dev._id}
+                                coordinate={{ 
+                                    latitude: dev.location.coordinates[1], 
+                                    longitude: dev.location.coordinates[0]
+                                }}
+                            >
+                                <Image 
+                                    style={styles.avatar} 
+                                    source={{ uri: dev.avatar }}
+                                />
 
-                            <Callout onPress={navigateToGithubProfile} style={styles.callout}>
-                                <Text style={styles.devName}>William Porto</Text>
-                                <Text style={styles.devBio}>Chemistry student at UFAM. Ìn love with Node.js, ReactJS and React Native</Text>
-                                <Text style={styles.devTechs}>Node.js, React JS, React Native</Text>
-                            </Callout>
-                        </Marker>
+                                <Callout onPress={() => {
+                                    navigation.navigate('Profile', {
+                                        github: dev.github
+                                    })
+                                }} style={styles.callout}>
+                                    <Text style={styles.devName}>{dev.github}</Text>
+                                    <Text style={styles.devBio}>{dev.bio}</Text>
+                                    <Text style={styles.devTechs}>{dev.techs.join(', ')}</Text>
+                                </Callout>
+                            </Marker>
+                        )) }
                     </MapView>
                     <View style={styles.searchForm}>
                         <TextInput 
@@ -73,9 +93,12 @@ export default function Main({ navigation }) {
                             placeholderTextColor="#999"
                             autoCapitalize="words"
                             autoCorrect={false}
+                            value={techs}
+                            onChangeText={setTechs}
                         />
                         <TouchableOpacity 
                             style={styles.searchButton}
+                            onPress={searchForDevs}
                         >
                             <MaterialIcons name="my-location" size={20} color="#FFF"/>
                         </TouchableOpacity>
