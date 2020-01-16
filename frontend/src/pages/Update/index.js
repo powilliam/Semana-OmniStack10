@@ -18,12 +18,12 @@ export default function Update({ location, history }) {
     const [ latitude, setLatitude ] = useState(() => {
         const { coordinates } = user_location 
 
-        return coordinates[0]
+        return coordinates[1]
     })
     const [ longitude, setLongitude ] = useState(() => {
         const { coordinates } = user_location 
 
-        return coordinates[1]
+        return coordinates[0]
     })
 
     async function UpdateDeveloper(e) {
