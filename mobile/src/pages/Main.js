@@ -55,7 +55,7 @@ export default function Main({ navigation }) {
     function increaseInputViewStylePosition() {
         setInputViewStyle({
             position: 'absolute',
-            top: 20,
+            top: 60,
             left: 20,
             right: 20,
             flexDirection: 'row',
