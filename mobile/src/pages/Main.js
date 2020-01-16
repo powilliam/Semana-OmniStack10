@@ -7,7 +7,7 @@ import api from '../services/api'
 import MarkerDev from '../components/MarkerDev'
 import SearchTech from '../components/SearchTech'
 
-import customMapStyles from '../config/Maps.json'
+import darkMapStyle from '../config/Maps.json'
 
 export default function Main({ navigation }) {
     const [ currentRegion, setCurrentRegion ] = useState(null)
@@ -68,6 +68,7 @@ export default function Main({ navigation }) {
                         style={styles.map}  
                         initialRegion={currentRegion}
                         onRegionChangeComplete={HandleChangeCurrentPosition}
+                        customMapStyle={darkMapStyle}
                     >
                         <MarkerDev 
                             developers={devs}
