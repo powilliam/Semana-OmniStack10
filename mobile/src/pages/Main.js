@@ -1,23 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, TextInput, TouchableOpacity, Keyboard } from 'react-native'
+import { StyleSheet, View  } from 'react-native'
 import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import MapView from 'react-native-maps'
-import { MaterialIcons } from '@expo/vector-icons'
 import api from '../services/api'
 
 import MarkerDev from '../components/MarkerDev'
+import SearchTech from '../components/SearchTech'
+
+import customMapStyles from '../config/Maps.json'
 
 export default function Main({ navigation }) {
     const [ currentRegion, setCurrentRegion ] = useState(null)
-    const [ techs, setTechs ] = useState('')
     const [ devs, setDevs ] = useState([])
-    const [ inputViewStyle, setInputViewStyle ] = useState({
-        position: 'absolute',
-        bottom: 20,
-        left: 20,
-        right: 20,
-        flexDirection: 'row',
-    })
 
     useEffect(() => {
         async function loadStartLocation() {
@@ -41,32 +35,7 @@ export default function Main({ navigation }) {
         loadStartLocation()
     }, [])
 
-    useEffect(() => {
-        const KeyboardDidShow = Keyboard.addListener('keyboardDidShow', increaseInputViewStylePosition)
-        const KeyboardDidhide = Keyboard.addListener('keyboardDidHide', decreaseInputViewStylePosition)
-
-        return () => {
-            KeyboardDidShow.remove()
-            KeyboardDidhide.remove()
-        }
-
-    }, [])
-
-    function increaseInputViewStylePosition() {
-        setInputViewStyle({
-            position: 'absolute',
-            top: 60,
-            left: 20,
-            right: 20,
-            flexDirection: 'row',
-        })
-    }
-
-    function decreaseInputViewStylePosition() {
-        setInputViewStyle(styles.searchForm)
-    }
-
-    async function searchForDevs(latitude, longitude) {
+    async function searchForDevs(latitude, longitude, techs) {
         return await api.get('/search', {
             params: {
                 latitude,
@@ -76,19 +45,14 @@ export default function Main({ navigation }) {
         })        
     }
 
-    async function HandleSearchForDevs() {
+    async function HandleSearchForDevs(techs) {
         const { latitude, longitude } = currentRegion
 
-        const { data } = await searchForDevs(latitude, longitude)
+        const { data } = await searchForDevs(latitude, longitude, techs)
 
         setDevs(data.locatedDevs)
-
-        clearInputAfterSearchIsCompleted()
     }
 
-    function clearInputAfterSearchIsCompleted() {
-        setTechs('')
-    }
 
     function HandleChangeCurrentPosition(region) {
         setCurrentRegion(region)
@@ -110,25 +74,9 @@ export default function Main({ navigation }) {
                             navigation={navigation}
                         />
                     </MapView>
-                    <View
-                        style={inputViewStyle}
-                    >
-                        <TextInput 
-                            style={styles.searchInput}
-                            placeholder="Buscar devs por tecnologias"
-                            placeholderTextColor="#999"
-                            autoCapitalize="words"
-                            autoCorrect={false}
-                            value={techs}
-                            onChangeText={setTechs}
-                        />
-                        <TouchableOpacity 
-                            style={styles.searchButton}
-                            onPress={HandleSearchForDevs}
-                        >
-                            <MaterialIcons name="my-location" size={20} color="#FFF"/>
-                        </TouchableOpacity>
-                    </View>
+                    <SearchTech 
+                        onSubmit={HandleSearchForDevs}
+                    />
                 </>
             ) }
         </>
@@ -138,37 +86,5 @@ export default function Main({ navigation }) {
 const styles = StyleSheet.create({
     map: {
         flex: 1
-    },
-    searchForm: {
-        position: 'absolute',
-        bottom: 20,
-        left: 20,
-        right: 20,
-        flexDirection: 'row',
-    },
-    searchInput: {
-        flex: 1,
-        height: 50,
-        backgroundColor: '#FFF',
-        color: '#333',
-        borderRadius: 25,
-        paddingHorizontal: 20,
-        fontSize: 16,
-        shadowColor: '#000',
-        shadowOpacity: 0.2,
-        shadowOffset: {
-            width: 4,
-            height: 4
-        },
-        elevation: 2
-    },
-    searchButton: {
-        width: 50,
-        height: 50,
-        backgroundColor: '#8E4DFF',
-        borderRadius: 25,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 15,
     }
 })
