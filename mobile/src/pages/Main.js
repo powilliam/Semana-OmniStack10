@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity, FlatList } from 'react-native'
+import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity, Keyboard } from 'react-native'
 import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import MapView, { Marker, Callout } from 'react-native-maps'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -9,6 +9,7 @@ export default function Main({ navigation }) {
     const [ currentRegion, setCurrentRegion ] = useState(null)
     const [ techs, setTechs ] = useState('')
     const [ devs, setDevs ] = useState([])
+    const [ inputViewStyle, setInputViewStyle ] = useState(styles.searchForm)
 
     useEffect(() => {
         async function loadStartLocation() {
@@ -31,6 +32,38 @@ export default function Main({ navigation }) {
 
         loadStartLocation()
     }, [])
+
+    useEffect(() => {
+        const KeyboardDidShow = Keyboard.addListener('keyboardDidShow', increaseInputViewStylePosition)
+        const KeyboardDidhide = Keyboard.addListener('keyboardDidHide', decreaseInputViewStylePosition)
+
+        return () => {
+            KeyboardDidShow.remove()
+            KeyboardDidhide.remove()
+        }
+    }, [])
+
+    function increaseInputViewStylePosition() {
+        setInputViewStyle({
+            position: 'absolute',
+            bottom: 60,
+            left: 20,
+            right: 20,
+            zIndex: 5,
+            flexDirection: 'row',
+        })
+    }
+
+    function decreaseInputViewStylePosition() {
+        setInputViewStyle({
+            position: 'absolute',
+            bottom: 20,
+            left: 20,
+            right: 20,
+            zIndex: 5,
+            flexDirection: 'row',
+        })
+    }
 
     async function searchForDevs() {
         const { latitude, longitude } = currentRegion
@@ -86,7 +119,9 @@ export default function Main({ navigation }) {
                             </Marker>
                         )) }
                     </MapView>
-                    <View style={styles.searchForm}>
+                    <View
+                        style={inputViewStyle}
+                    >
                         <TextInput 
                             style={styles.searchInput}
                             placeholder="Buscar devs por tecnologias"
@@ -136,11 +171,11 @@ const styles = StyleSheet.create({
     },
     searchForm: {
         position: 'absolute',
-        top: 20,
+        bottom: 20,
         left: 20,
         right: 20,
         zIndex: 5,
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     searchInput: {
         flex: 1,
