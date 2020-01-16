@@ -11,7 +11,7 @@ routes.get('/search', SearchController.index)
 
 routes.get('/devs', DevController.index)
 routes.post('/devs/register', DevMiddleware.GithubVerification, DevMiddleware.RegisterVerification, DevController.store)
-routes.put('/devs/:_id/update', DevController.update)
+routes.put('/devs/:_id/update', DevMiddleware.GithubVerification, DevController.update)
 routes.delete('/devs/:_id/unregister', DevController.destroy)
 
 module.exports = routes

@@ -39,7 +39,7 @@ class DevController {
         const { _id } = request.params
         const { github, techs, latitude, longitude } = request.body
 
-        console.log(`> Updating dev information registered with github account: ${github}`)
+        console.log(`> Dev uptaded with github account: ${github}`)
 
         const { bio, avatar_url } = await getGithubUserData(github)
 
@@ -65,7 +65,7 @@ class DevController {
     async destroy(request, response) {
         const { _id } = request.params
 
-        console.log(`> Deleting dev with id account: ${_id}`)
+        console.log(`> Deleting dev with account id: ${_id}`)
         
         try {
             await Devs.findByIdAndDelete({ _id: _id })
