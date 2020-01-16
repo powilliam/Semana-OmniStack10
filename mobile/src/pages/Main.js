@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity, Keyboard } from 'react-native'
+import { StyleSheet, View, TextInput, TouchableOpacity, Keyboard } from 'react-native'
 import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
-import MapView, { Marker, Callout } from 'react-native-maps'
+import MapView from 'react-native-maps'
 import { MaterialIcons } from '@expo/vector-icons'
 import api from '../services/api'
+
+import MarkerDev from '../components/MarkerDev'
 
 export default function Main({ navigation }) {
     const [ currentRegion, setCurrentRegion ] = useState(null)
     const [ techs, setTechs ] = useState('')
     const [ devs, setDevs ] = useState([])
-    const [ inputViewStyle, setInputViewStyle ] = useState(styles.searchForm)
+    const [ inputViewStyle, setInputViewStyle ] = useState({
+        position: 'absolute',
+        bottom: 20,
+        left: 20,
+        right: 20,
+        flexDirection: 'row',
+    })
 
     useEffect(() => {
         async function loadStartLocation() {
@@ -41,42 +49,45 @@ export default function Main({ navigation }) {
             KeyboardDidShow.remove()
             KeyboardDidhide.remove()
         }
+
     }, [])
 
     function increaseInputViewStylePosition() {
         setInputViewStyle({
             position: 'absolute',
-            bottom: 60,
+            bottom: 80,
             left: 20,
             right: 20,
-            zIndex: 5,
             flexDirection: 'row',
         })
     }
 
     function decreaseInputViewStylePosition() {
-        setInputViewStyle({
-            position: 'absolute',
-            bottom: 20,
-            left: 20,
-            right: 20,
-            zIndex: 5,
-            flexDirection: 'row',
-        })
+        setInputViewStyle(styles.searchForm)
     }
 
-    async function searchForDevs() {
-        const { latitude, longitude } = currentRegion
-
-        const { data } = await api.get('/search', {
+    async function searchForDevs(latitude, longitude) {
+        return await api.get('/search', {
             params: {
                 latitude,
                 longitude,
                 techs
             }
-        })
+        })        
+    }
+
+    async function HandleSearchForDevs() {
+        const { latitude, longitude } = currentRegion
+        
+        const { data } = await searchForDevs(latitude, longitude)
 
         setDevs(data.locatedDevs)
+
+        clearInputAfterSearchIsCompleted()
+    }
+
+    function clearInputAfterSearchIsCompleted() {
+        setTechs('')
     }
 
     function HandleChangeCurrentPosition(region) {
@@ -94,30 +105,10 @@ export default function Main({ navigation }) {
                         initialRegion={currentRegion}
                         onRegionChangeComplete={HandleChangeCurrentPosition}
                     >
-                        { devs.map(dev => (
-                            <Marker
-                                key={dev._id}
-                                coordinate={{ 
-                                    latitude: dev.location.coordinates[1], 
-                                    longitude: dev.location.coordinates[0]
-                                }}
-                            >
-                                <Image 
-                                    style={styles.avatar} 
-                                    source={{ uri: dev.avatar }}
-                                />
-
-                                <Callout onPress={() => {
-                                    navigation.navigate('Profile', {
-                                        github: dev.github
-                                    })
-                                }} style={styles.callout}>
-                                    <Text style={styles.devName}>{dev.github}</Text>
-                                    <Text style={styles.devBio}>{dev.bio}</Text>
-                                    <Text style={styles.devTechs}>{dev.techs.join(', ')}</Text>
-                                </Callout>
-                            </Marker>
-                        )) }
+                        <MarkerDev 
+                            developers={devs}
+                            navigation={navigation}
+                        />
                     </MapView>
                     <View
                         style={inputViewStyle}
@@ -133,7 +124,7 @@ export default function Main({ navigation }) {
                         />
                         <TouchableOpacity 
                             style={styles.searchButton}
-                            onPress={searchForDevs}
+                            onPress={HandleSearchForDevs}
                         >
                             <MaterialIcons name="my-location" size={20} color="#FFF"/>
                         </TouchableOpacity>
@@ -148,33 +139,11 @@ const styles = StyleSheet.create({
     map: {
         flex: 1
     },
-    avatar: {
-        width: 54,
-        height: 54,
-        borderRadius: 4,
-        borderWidth: 4,
-        borderColor: '#FFF'
-    },
-    callout: {
-        width: 260,
-    },
-    devName: {
-        fontWeight: 'bold',
-        fontSize: 16
-    },
-    devBio: {
-        color: '#666',
-        marginTop: 5,
-    },
-    devTechs: {
-        marginTop: 5
-    },
     searchForm: {
         position: 'absolute',
         bottom: 20,
         left: 20,
         right: 20,
-        zIndex: 5,
         flexDirection: 'row',
     },
     searchInput: {
