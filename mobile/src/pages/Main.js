@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image } from 'react-native'
 import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import MapView, { Marker, Callout } from 'react-native-maps'
 
-export default function Main() {
+export default function Main({ navigation }) {
     const [ currentRegion, setCurrentRegion ] = useState(null)
 
     useEffect(() => {
@@ -28,6 +28,12 @@ export default function Main() {
         loadStartLocation()
     }, [])
 
+    function navigateToGithubProfile() {
+        navigation.navigate('Profile', {
+            github: 'powilliam'
+        })
+    }
+
     return (
         <>
             { !currentRegion ? (
@@ -43,7 +49,7 @@ export default function Main() {
                             source={{ uri: 'https://avatars0.githubusercontent.com/u/55867831?s=460&v=4' }}
                         />
 
-                        <Callout style={styles.callout}>
+                        <Callout onPress={navigateToGithubProfile} style={styles.callout}>
                             <Text style={styles.devName}>William Porto</Text>
                             <Text style={styles.devBio}>Chemistry student at UFAM. Ìn love with Node.js, ReactJS and React Native</Text>
                             <Text style={styles.devTechs}>Node.js, React JS, React Native</Text>
