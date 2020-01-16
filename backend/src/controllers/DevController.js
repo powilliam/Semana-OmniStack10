@@ -11,47 +11,35 @@ class DevController {
 
     async store(request, response) {
         const { github, techs, latitude, longitude } = request.body
-    
-        const registeredDev = await verifyIfDevIsAlreadyRegistered(github)
 
-        if (!registeredDev) {
-            console.log('> Creating new dev')
+        console.log(`> Creating new dev with github account: ${github}`)
 
-            const { name = login, avatar_url, bio } = await getGithubUserData(github)
+        const { name = login, avatar_url, bio } = await getGithubUserData(github)
 
-            const arrayTechs = parseStringToArray(techs)
-    
-            const location = {
-                type: 'Point',
-                coordinates: [longitude, latitude]
-            }
-        
-            const dev = await Devs.create({
-                name,
-                avatar: avatar_url,
-                techs: arrayTechs,
-                github,
-                bio,
-                location
-            })
-        
-            return response.json(dev)
-        } else {
-            console.log('> Dev is already registered')
+        const arrayTechs = parseStringToArray(techs)
 
-            return response.json(registeredDev)
+        const location = {
+            type: 'Point',
+            coordinates: [longitude, latitude]
         }
-
-        async function verifyIfDevIsAlreadyRegistered(account) {
-            return await Devs.findOne({ github: account })
-        }
+    
+        const dev = await Devs.create({
+            name,
+            avatar: avatar_url,
+            techs: arrayTechs,
+            github,
+            bio,
+            location
+        })
+    
+        return response.json(dev)
     }
 
     async update(request, response) {
         const { _id } = request.params
         const { github, techs, latitude, longitude } = request.body
 
-        console.log(`> Updating dev information with id: ${_id}`)
+        console.log(`> Updating dev information registered with github account: ${github}`)
 
         const { bio, avatar_url } = await getGithubUserData(github)
 
@@ -77,7 +65,7 @@ class DevController {
     async destroy(request, response) {
         const { _id } = request.params
 
-        console.log(`> Deleting dev with id: ${_id}`)
+        console.log(`> Deleting dev with github account: ${github}`)
         
         await Devs.findByIdAndDelete({ _id: _id })
 

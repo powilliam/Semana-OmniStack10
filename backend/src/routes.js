@@ -3,12 +3,14 @@ const { Router } = require('express')
 const DevController = require('./controllers/DevController')
 const SearchController = require('./controllers/SearchController')
 
+const DevMiddleware = require('./middlewares/DevMiddleware')
+
 const routes = Router()
 
 routes.get('/search', SearchController.index)
 
 routes.get('/devs', DevController.index)
-routes.post('/devs/register', DevController.store)
+routes.post('/devs/register', DevMiddleware.GithubVerification, DevMiddleware.RegisterVerification, DevController.store)
 routes.put('/devs/:_id/update', DevController.update)
 routes.delete('/devs/:_id/unregister', DevController.destroy)
 
