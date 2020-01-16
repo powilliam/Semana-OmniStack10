@@ -55,7 +55,7 @@ export default function Main({ navigation }) {
     function increaseInputViewStylePosition() {
         setInputViewStyle({
             position: 'absolute',
-            bottom: 80,
+            top: 20,
             left: 20,
             right: 20,
             flexDirection: 'row',
@@ -78,7 +78,7 @@ export default function Main({ navigation }) {
 
     async function HandleSearchForDevs() {
         const { latitude, longitude } = currentRegion
-        
+
         const { data } = await searchForDevs(latitude, longitude)
 
         setDevs(data.locatedDevs)
