@@ -62,12 +62,21 @@ li.dev-item header .user-info {
     cursor: pointer;
 }
 
-.dev-controll button#update-dev {
+.dev-controll #update-dev {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     background-color: rgb(251, 251, 150);
-    color: #000
+    height: 30px;
+    border: 0;
+    border-radius: 3px;
+    color: #666;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-.dev-controll button#remove-dev {
+.dev-controll #remove-dev {
     background-color: tomato;
     color: #fff
 }
