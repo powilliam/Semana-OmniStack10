@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity, FlatList } from 'react-native'
 import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import MapView, { Marker, Callout } from 'react-native-maps'
 import { MaterialIcons } from '@expo/vector-icons'
+import api from '../services/api'
 
 export default function Main({ navigation }) {
     const [ currentRegion, setCurrentRegion ] = useState(null)
     const [ techs, setTechs ] = useState('')
+    const [ devs, setDevs ] = useState([])
 
     useEffect(() => {
         async function loadStartLocation() {
@@ -30,6 +32,10 @@ export default function Main({ navigation }) {
         loadStartLocation()
     }, [])
 
+    function HandleChangeCurrentPosition(region) {
+        setCurrentRegion(region)
+    }
+
     function navigateToGithubProfile() {
         navigation.navigate('Profile', {
             github: 'powilliam'
@@ -45,6 +51,7 @@ export default function Main({ navigation }) {
                     <MapView 
                         style={styles.map}  
                         initialRegion={currentRegion}
+                        onRegionChangeComplete={HandleChangeCurrentPosition}
                     >
                         <Marker coordinate={{ latitude: -7.503922, longitude: -63.026543 }}>
                             <Image 
