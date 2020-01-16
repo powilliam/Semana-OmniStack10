@@ -7,6 +7,7 @@ export default function App() {
     <>
       <StatusBar 
         barStyle="light-content"
+        hidden={true}
         backgroundColor="#7D40E7"
       />
       <Routes />
