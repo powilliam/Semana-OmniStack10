@@ -65,11 +65,16 @@ class DevController {
     async destroy(request, response) {
         const { _id } = request.params
 
-        console.log(`> Deleting dev with github account: ${github}`)
+        console.log(`> Deleting dev with id account: ${_id}`)
         
-        await Devs.findByIdAndDelete({ _id: _id })
+        try {
+            await Devs.findByIdAndDelete({ _id: _id })
+        } catch (error) {
+            return response.status(404).json({ error })
+        }
 
-        return response.status(200).json({ status: 'deleted' })
+        console.log(`> Dev deleted`)
+        return response.json({ status: 'deleted' })
     }
 }
 
