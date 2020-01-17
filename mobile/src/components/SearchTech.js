@@ -2,10 +2,18 @@ import React, { useState } from 'react'
 import { StyleSheet, View, TextInput, TouchableOpacity, Keyboard } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 
+import { connect, disconnect } from '../services/websocket'
+
 export default function SearchTech({ onSubmit }) {
     const [ techs, setTechs ] = useState('')
 
+    function setupWebsocket() {
+        connect()
+    }
+
     async function HandleSubmition() {
+        setupWebsocket()
+
         await onSubmit(techs)
         setTechs('')
     }
