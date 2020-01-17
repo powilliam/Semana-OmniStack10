@@ -1,4 +1,5 @@
 const express = require('express')
+const http = require('http')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const routes = require('./routes')
@@ -6,6 +7,7 @@ const routes = require('./routes')
 const bodyParser = express.json()
 
 const app = express()
+const server = http.Server(app)
 
 mongoose.connect(
     'mongodb+srv://powilliam:powilliam@heaven-uc9c7.mongodb.net/test?retryWrites=true&w=majority', {
@@ -29,6 +31,6 @@ app.use(cors())
 app.use(bodyParser)
 app.use(routes)
 
-app.listen(3333, () => {
+server.listen(3333, () => {
     console.log('> Listening')
 })
