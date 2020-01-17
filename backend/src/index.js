@@ -3,11 +3,14 @@ const http = require('http')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const routes = require('./routes')
+const { setupWebsocket } = require('./websocket')
 
 const bodyParser = express.json()
 
 const app = express()
 const server = http.Server(app)
+
+setupWebsocket(server)
 
 mongoose.connect(
     'mongodb+srv://powilliam:powilliam@heaven-uc9c7.mongodb.net/test?retryWrites=true&w=majority', {
