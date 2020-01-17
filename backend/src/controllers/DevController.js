@@ -1,6 +1,7 @@
 const Devs = require('../models/Dev')
 const parseStringToArray = require('../utils/parseStringToArray')
 const getGithubUserData = require('../utils/getGithubUserData')
+const { findConnections, sendMessage } = require('../websocket')
 
 class DevController {
     async index(request, response) {
@@ -31,6 +32,13 @@ class DevController {
             bio,
             location
         })
+
+        const sendMessageTo = findConnections(
+            { latitude, longitude },
+            arrayTechs
+        )
+
+        sendMessage(sendMessageTo, 'new-dev', dev)
     
         return response.json(dev)
     }

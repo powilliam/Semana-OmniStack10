@@ -4,6 +4,7 @@ import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import MapView from 'react-native-maps'
 
 import api from '../services/api'
+import { subscribeToNewDev } from '../services/websocket'
 
 import MarkerDev from '../components/MarkerDev'
 import SearchTech from '../components/SearchTech'
@@ -13,6 +14,10 @@ import darkMapStyle from '../config/Maps.json'
 export default function Main({ navigation }) {
     const [ currentRegion, setCurrentRegion ] = useState(null)
     const [ devs, setDevs ] = useState([])
+
+    useEffect(() => {
+        subscribeToNewDev(dev => setDevs([...devs, dev]))
+    }, [devs])
 
     useEffect(() => {
         async function loadStartLocation() {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, TextInput, TouchableOpacity, Keyboard } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 
@@ -8,6 +8,8 @@ export default function SearchTech({ onSubmit, location }) {
     const [ techs, setTechs ] = useState('')
 
     function setupWebsocket() {
+        disconnect()
+
         const { latitude, longitude } = location
 
         connect(latitude, longitude, techs)
