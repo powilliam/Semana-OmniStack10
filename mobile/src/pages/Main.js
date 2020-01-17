@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, View  } from 'react-native'
 import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import MapView from 'react-native-maps'
+
 import api from '../services/api'
 
 import MarkerDev from '../components/MarkerDev'
@@ -77,6 +78,7 @@ export default function Main({ navigation }) {
                     </MapView>
                     <SearchTech 
                         onSubmit={HandleSearchForDevs}
+                        location={currentRegion}
                     />
                 </>
             ) }

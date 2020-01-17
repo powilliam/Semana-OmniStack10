@@ -4,7 +4,13 @@ const socket = socketio('http://192.168.0.104:3333', {
     autoConnect: false
 })
 
-export function connect() {
+export function connect(latitude, longitude, techs) {
+    socket.io.opts.query = {
+        latitude,
+        longitude,
+        techs
+    }
+
     socket.connect()
 }
 

@@ -4,11 +4,13 @@ import { MaterialIcons } from '@expo/vector-icons'
 
 import { connect, disconnect } from '../services/websocket'
 
-export default function SearchTech({ onSubmit }) {
+export default function SearchTech({ onSubmit, location }) {
     const [ techs, setTechs ] = useState('')
 
     function setupWebsocket() {
-        connect()
+        const { latitude, longitude } = location
+
+        connect(latitude, longitude, techs)
     }
 
     async function HandleSubmition() {
