@@ -1,5 +1,6 @@
 const socketio = require('socket.io')
 const parseStringToArray = require('./utils/parseStringToArray')
+const calculateDistance = require('./utils/calculateDistance')
 
 const connections = []
 
@@ -18,5 +19,12 @@ exports.setupWebsocket = (server) => {
             },
             techs: parseStringToArray(techs)
         })
+    })
+}
+
+exports.findConnections = (coordinates, techs) => {
+    return connections.filter(connection => {
+        return calculateDistance(coordinates, connection.coordinates) < 10
+            && connection.techs.some(item => techs.includes(item))
     })
 }
