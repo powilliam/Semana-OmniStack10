@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, TextInput, TouchableOpacity, Keyboard } from 'react-native'
+import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 
 import { connect, disconnect } from '../services/websocket'
@@ -25,6 +25,8 @@ export default function SearchTech({ onSubmit, location }) {
     return (
         <View
             style={styles.searchForm}
+            behavior="padding"
+            enabled
         >
             <TextInput 
                 style={styles.searchInput}
@@ -48,7 +50,7 @@ export default function SearchTech({ onSubmit, location }) {
 const styles = StyleSheet.create({
     searchForm: {
         position: 'absolute',
-        top: 60,
+        top: 55,
         left: 20,
         right: 20,
         flexDirection: 'row',
@@ -72,7 +74,7 @@ const styles = StyleSheet.create({
     searchButton: {
         width: 50,
         height: 50,
-        backgroundColor: '#8E4DFF',
+        backgroundColor: '#ff6347',
         borderRadius: 25,
         justifyContent: 'center',
         alignItems: 'center',
